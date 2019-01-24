@@ -28,6 +28,7 @@ class ProductDetail extends StatelessWidget {
             padding: EdgeInsets.all(10.0),
             child: RaisedButton(
                 color: Theme.of(context).accentColor,
+                textColor: Colors.white,
                 child: Text("DELETE"),
                 onPressed: () => Navigator.pop(context, true)),
           )
