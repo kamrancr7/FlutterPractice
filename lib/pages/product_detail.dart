@@ -12,6 +12,26 @@ class ProductDetail extends StatelessWidget {
   ProductDetail(this.title, this.imageUrl, this.productDescription,
       this.productPrice, this.productAddress);
 
+  Widget _buildAddressPriceRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          productAddress,
+          style: TextStyle(fontFamily: "Oswald", color: Colors.grey),
+        ),
+        Text(
+          " | ",
+          style: TextStyle(color: Colors.grey),
+        ),
+        Text(
+          productPrice + " Rs",
+          style: TextStyle(fontFamily: "Oswald", color: Colors.grey),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -32,23 +52,7 @@ class ProductDetail extends StatelessWidget {
                 padding: EdgeInsets.all(10.0),
                 child: TextDefault(title),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    productAddress,
-                    style: TextStyle(fontFamily: "Oswald", color: Colors.grey),
-                  ),
-                  Text(
-                    " | ",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  Text(
-                    productPrice + " Rs",
-                    style: TextStyle(fontFamily: "Oswald", color: Colors.grey),
-                  ),
-                ],
-              ),
+              _buildAddressPriceRow(),
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: Text(

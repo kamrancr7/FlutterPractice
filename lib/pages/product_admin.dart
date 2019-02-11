@@ -6,29 +6,33 @@ class ProductAdmin extends StatelessWidget {
   final Function addProduct;
   final Function deleteProduct;
 
-  ProductAdmin(this.addProduct,this.deleteProduct);
+  ProductAdmin(this.addProduct, this.deleteProduct);
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: <Widget>[
+          AppBar(
+            title: Text("Product Admin"),
+          ),
+          ListTile(
+            leading: Icon(Icons.shop),
+            title: Text("Go Back"),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, "/home");
+            },
+          )
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        drawer: Drawer(
-          child: Column(
-            children: <Widget>[
-              AppBar(
-                title: Text("Product Admin"),
-              ),
-              ListTile(
-                leading: Icon(Icons.shop),
-                title: Text("Go Back"),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, "/home");
-                },
-              )
-            ],
-          ),
-        ),
+        drawer: _buildDrawer(context),
         appBar: AppBar(
           title: Text("Product Admin"),
           bottom: TabBar(tabs: <Widget>[
@@ -42,8 +46,10 @@ class ProductAdmin extends StatelessWidget {
             )
           ]),
         ),
-        body: TabBarView(
-            children: <Widget>[CreateProductsPage(addProduct), MyProductsPage()]),
+        body: TabBarView(children: <Widget>[
+          CreateProductsPage(addProduct),
+          MyProductsPage()
+        ]),
       ),
     );
   }
