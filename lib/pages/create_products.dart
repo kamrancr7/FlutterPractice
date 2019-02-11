@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CreateProductsPage extends StatefulWidget {
+  final Function addProduct;
+
+  CreateProductsPage(this.addProduct);
+
   @override
   State<StatefulWidget> createState() {
     return _CreateProductsPageState();
@@ -8,35 +12,76 @@ class CreateProductsPage extends StatefulWidget {
 }
 
 class _CreateProductsPageState extends State<CreateProductsPage> {
-  String titleValue;
-  String descriptionValue;
-  double priceValue;
+  String _titleValue;
+  String _descriptionValue;
+  double _priceValue;
+
+  // For Title Text Field
+  Widget _buildTitleTextField() {
+    return TextField(
+      decoration: InputDecoration(labelText: "Title"),
+      onChanged: (String value) {
+        setState(() {
+          _titleValue = value;
+        });
+      },
+    );
+  }
+
+  // For Description Text Field
+  Widget _buildDescriptionTextField() {
+    return TextField(
+      maxLines: 4,
+      decoration: InputDecoration(labelText: "Description"),
+      onChanged: (String value) {
+        setState(() {
+          _descriptionValue = value;
+        });
+      },
+    );
+  }
+
+  // For Price Text Field
+  Widget _buildPriceTextField() {
+    return TextField(
+      decoration: InputDecoration(labelText: "Price"),
+      onChanged: (String value) {
+        setState(() {
+          _priceValue = double.parse(value);
+        });
+      },
+      keyboardType: TextInputType.numberWithOptions(decimal: false),
+    );
+  }
+
+  // For Save button pressed
+  void _submitForm(){
+    
+            final Map<String, dynamic> product = {
+              'title': _titleValue,
+                'description': _descriptionValue,
+                'price': _priceValue,
+                'image': 'assets/food.jpg',
+                'address': 'Malir Halt, Karachi Pakistan'
+            };
+            widget.addProduct(product);
+            Navigator.pushReplacementNamed(context, "/home");
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: <Widget>[
-        TextField(
-          onChanged: (String value) {
-            setState(() {
-              titleValue = value;
-            });
-          },
+        _buildTitleTextField(),
+        _buildDescriptionTextField(),
+        _buildPriceTextField(),
+        SizedBox(
+          height: 10.0,
         ),
-        TextField(
-          onChanged: (String value) {
-            setState(() {
-              descriptionValue = value;
-            });
-          },
-        ),
-        TextField(
-          onChanged: (String value) {
-            setState(() {
-              priceValue = double.parse(value);
-            });
-          },
-          keyboardType: TextInputType.numberWithOptions(decimal: false),
+        RaisedButton(
+          child: Text("Save"),
+          color: Theme.of(context).accentColor,
+          onPressed: _submitForm,
         )
       ],
     );
