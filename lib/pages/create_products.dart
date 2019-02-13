@@ -28,9 +28,7 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
         }
       },
       onSaved: (String value) {
-        setState(() {
           _titleValue = value;
-        });
       },
     );
   }
@@ -46,9 +44,7 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
         }
       },
       onSaved: (String value) {
-        setState(() {
           _descriptionValue = value;
-        });
       },
     );
   }
@@ -63,9 +59,7 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
         }
       },
       onSaved: (String value) {
-        setState(() {
           _priceValue = double.parse(value);
-        });
       },
       keyboardType: TextInputType.numberWithOptions(decimal: false),
     );
@@ -93,7 +87,11 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     final double targetPadding = deviceWidth - targetWidth;
-    return Container(
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
       margin: EdgeInsets.all(10.0),
       child: Form(
         key: _formKey,
@@ -114,6 +112,6 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
           ],
         ),
       ),
-    );
+    ),);
   }
 }
