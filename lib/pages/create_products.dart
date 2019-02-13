@@ -15,12 +15,19 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
   String _titleValue;
   String _descriptionValue;
   double _priceValue;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // For Title Text Field
   Widget _buildTitleTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: "Title"),
-      onChanged: (String value) {
+      //autovalidate: true,
+      validator: (String value){
+        if(value.isEmpty){
+          return "Title is required";
+        }
+      },
+      onSaved: (String value) {
         setState(() {
           _titleValue = value;
         });
@@ -30,10 +37,10 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
 
   // For Description Text Field
   Widget _buildDescriptionTextField() {
-    return TextField(
+    return TextFormField(
       maxLines: 4,
       decoration: InputDecoration(labelText: "Description"),
-      onChanged: (String value) {
+      onSaved: (String value) {
         setState(() {
           _descriptionValue = value;
         });
@@ -43,9 +50,9 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
 
   // For Price Text Field
   Widget _buildPriceTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: "Price"),
-      onChanged: (String value) {
+      onSaved: (String value) {
         setState(() {
           _priceValue = double.parse(value);
         });
@@ -55,35 +62,48 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
   }
 
   // For Save button pressed
-  void _submitForm(){
-    
-            final Map<String, dynamic> product = {
-              'title': _titleValue,
-                'description': _descriptionValue,
-                'price': _priceValue,
-                'image': 'assets/food.jpg',
-                'address': 'Malir Halt, Karachi Pakistan'
-            };
-            widget.addProduct(product);
-            Navigator.pushReplacementNamed(context, "/home");
+  void _submitForm() {
+    if(!_formKey.currentState.validate()){
+      return;
+    }
+    _formKey.currentState.save();
+    final Map<String, dynamic> product = {
+      'title': _titleValue,
+      'description': _descriptionValue,
+      'price': _priceValue,
+      'image': 'assets/food.jpg',
+      'address': 'Malir Halt, Karachi Pakistan'
+    };
+    widget.addProduct(product);
+    Navigator.pushReplacementNamed(context, "/home");
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        _buildTitleTextField(),
-        _buildDescriptionTextField(),
-        _buildPriceTextField(),
-        SizedBox(
-          height: 10.0,
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
+    final double targetPadding = deviceWidth - targetWidth;
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
+          children: <Widget>[
+            _buildTitleTextField(),
+            _buildDescriptionTextField(),
+            _buildPriceTextField(),
+            SizedBox(
+              height: 10.0,
+            ),
+            RaisedButton(
+              child: Text("Save"),
+              color: Theme.of(context).accentColor,
+              onPressed: _submitForm,
+            )
+          ],
         ),
-        RaisedButton(
-          child: Text("Save"),
-          color: Theme.of(context).accentColor,
-          onPressed: _submitForm,
-        )
-      ],
+      ),
     );
   }
 }
