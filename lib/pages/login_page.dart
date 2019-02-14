@@ -8,9 +8,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  String _userName;
-  String _password;
-  bool _switchValue = false;
+  final Map<String,dynamic> _formData = {
+    "email" : null,
+    "password" : null,
+    "acceptTerms" : false
+  };
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
@@ -21,45 +24,57 @@ class _LoginPage extends State<LoginPage> {
   }
 
   Widget _buildEmailTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(
           labelText: "Email", filled: true, fillColor: Colors.white),
       keyboardType: TextInputType.emailAddress,
-      onChanged: (String userValue) {
-        setState(() {
-          _userName = userValue;
-        });
+      validator: (String value) {
+        if (value.isEmpty ||
+            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(value)) {
+          return "Please enter valid email";
+        }
+      },
+      onSaved: (String userValue) {
+        _formData["email"] = userValue;
       },
     );
   }
 
   Widget _buildPasswordField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(
           labelText: "Password", filled: true, fillColor: Colors.white),
       keyboardType: TextInputType.text,
       obscureText: true,
-      onChanged: (String passwordValue) {
-        setState(() {
-          _password = passwordValue;
-        });
+      validator: (String value) {
+        if (value.isEmpty || value.length <= 5) {
+          return "Password invalid";
+        }
+      },
+      onSaved: (String passwordValue) {
+        _formData["password"] = passwordValue;
       },
     );
   }
 
   Widget _buildSwitch() {
     return SwitchListTile(
-      value: _switchValue,
+      value: _formData["acceptTerms"],
       onChanged: (bool value) {
         setState(() {
-          _switchValue = value;
+          _formData["acceptTerms"] = value;
         });
       },
-      title: Text("State Change"),
+      title: Text("Accept Terms"),
     );
   }
 
   void _onSubmit() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
     Navigator.pushReplacementNamed(context, "/home");
   }
 
@@ -78,23 +93,26 @@ class _LoginPage extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Container(
               width: targetWidth,
-              child: Column(
-                children: <Widget>[
-                  _buildEmailTextField(),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  _buildPasswordField(),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  _buildSwitch(),
-                  RaisedButton(
-                      color: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      child: Text("LOGIN"),
-                      onPressed: _onSubmit)
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    _buildEmailTextField(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildPasswordField(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildSwitch(),
+                    RaisedButton(
+                        color: Theme.of(context).primaryColor,
+                        textColor: Colors.white,
+                        child: Text("LOGIN"),
+                        onPressed: _onSubmit)
+                  ],
+                ),
               ),
             ),
           ),

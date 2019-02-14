@@ -12,9 +12,13 @@ class CreateProductsPage extends StatefulWidget {
 }
 
 class _CreateProductsPageState extends State<CreateProductsPage> {
-  String _titleValue;
-  String _descriptionValue;
-  double _priceValue;
+  final Map<String,dynamic> _formValues = {
+    "title" : null,
+    "description" : null,
+    "price" : null,
+    "image": "assets/food.jpg",
+    "address": "Malir Halt, Karachi Pakistan"
+  };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // For Title Text Field
@@ -28,7 +32,7 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
         }
       },
       onSaved: (String value) {
-          _titleValue = value;
+        _formValues["title"] = value;
       },
     );
   }
@@ -44,7 +48,7 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
         }
       },
       onSaved: (String value) {
-          _descriptionValue = value;
+        _formValues["description"] = value;
       },
     );
   }
@@ -59,7 +63,7 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
         }
       },
       onSaved: (String value) {
-          _priceValue = double.parse(value);
+        _formValues["price"] = double.parse(value);
       },
       keyboardType: TextInputType.numberWithOptions(decimal: false),
     );
@@ -71,14 +75,7 @@ class _CreateProductsPageState extends State<CreateProductsPage> {
       return;
     }
     _formKey.currentState.save();
-    final Map<String, dynamic> product = {
-      'title': _titleValue,
-      'description': _descriptionValue,
-      'price': _priceValue,
-      'image': 'assets/food.jpg',
-      'address': 'Malir Halt, Karachi Pakistan'
-    };
-    widget.addProduct(product);
+    widget.addProduct(_formValues);
     Navigator.pushReplacementNamed(context, "/home");
   }
 
