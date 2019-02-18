@@ -27,7 +27,7 @@ class _MyApp extends State<MyApp> {
       routes: {
         "/": (BuildContext) => LoginPage(),
         "/home": (BuildContext) => HomePage(_products),
-        "/admin": (BuildContext) => ProductAdmin(_addProduct, _deleteProduct, _products)
+        "/admin": (BuildContext) => ProductAdmin(_addProduct, _updateProduct, _deleteProduct, _products)
       },
       onGenerateRoute: (RouteSettings settings) {
         final List<String> pathElements = settings.name.split("/");
@@ -54,6 +54,12 @@ class _MyApp extends State<MyApp> {
   void _addProduct(Map<String, dynamic> product) {
     setState(() {
       _products.add(product);
+    });
+  }
+
+  void _updateProduct(int index,Map<String, dynamic> product) {
+    setState(() {
+      _products[index] = product;
     });
   }
 
