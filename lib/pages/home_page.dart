@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/products/products.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatelessWidget {
-  final List<Map<String, dynamic>> products;
-
-  HomePage(this.products);
 
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
@@ -39,7 +37,7 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: Products(products),
+      body: Products(),
     );
   }
 }
