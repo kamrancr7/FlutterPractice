@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/product.dart';
-import 'package:flutter_app/scoped_model/products_model.dart';
+import 'package:flutter_app/scoped_model/main_scopped_model.dart';
 import './pages/product_admin.dart';
 import './pages/home_page.dart';
 import './pages/product_detail.dart';
@@ -21,8 +20,8 @@ class MyApp extends StatefulWidget {
 class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<ProductsModel>(
-        model: ProductsModel(),
+    return ScopedModel<MainScoppedModel>(
+        model: MainScoppedModel(),
         child: MaterialApp(
           theme: ThemeData(
               primarySwatch: Colors.deepOrange, accentColor: Colors.purple),

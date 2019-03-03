@@ -1,38 +1,52 @@
 import 'package:flutter_app/models/product.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_app/scoped_model/connected_products.dart';
 
-class ProductsModel extends Model {
-  List<Product> _products = [];
-  int _selectedIndex;
+class ProductsModel extends ConnectedProducts {
+  bool _showFavourite = false;
 
-  List<Product> get products {
-    return List.from(_products);
+  List<Product> get allProducts {
+    return List.from(products);
+  }
+
+  List<Product> get displayedProducts {
+    if (_showFavourite) {
+      return products.where((Product product) => product.isFavourite).toList();
+    }
+    return List.from(products);
   }
 
   int get selectedProductId {
-    return _selectedIndex;
+    return selIndex;
+  }
+
+  bool get showFavourite{
+    return _showFavourite;
   }
 
   Product get selectProduct {
-    if (_selectedIndex == null) {
+    if (selIndex == null) {
       return null;
     }
-    return _products[_selectedIndex];
+    return products[selIndex];
   }
 
-  void addProduct(Product product) {
-    _products.add(product);
-    _selectedIndex = null;
-  }
-
-  void updateProduct(Product product) {
-    _products[_selectedIndex] = product;
-    _selectedIndex = null;
+  void updateProduct(String title, String description, double price, String image,
+      String address) {
+    final Product updateProduct = Product(
+        title: title,
+        description: description,
+        price: price,
+        image: image,
+        address: address,
+        id: selectProduct.id,
+        email: selectProduct.email);
+    products[selIndex] = updateProduct;
+    selIndex = null;
   }
 
   void deleteProduct() {
-    _products.removeAt(_selectedIndex);
-    _selectedIndex = null;
+    products.removeAt(selIndex);
+    selIndex = null;
   }
 
   void toggleProductFavouriteStatus() {
@@ -44,13 +58,21 @@ class ProductsModel extends Model {
         price: selectProduct.price,
         image: selectProduct.image,
         address: selectProduct.address,
+        email: selectProduct.email,
+        id: selectProduct.id,
         isFavourite: newFavouriteStatus);
-    _products[_selectedIndex] = updateProduct;
-    _selectedIndex = null;
+    products[selIndex] = updateProduct;
+    selIndex = null;
     notifyListeners();
   }
 
   void selectedProduct(int index) {
-    _selectedIndex = index;
+    selIndex = index;
+    notifyListeners();
+  }
+
+  void toggleDisplayMode() {
+    _showFavourite = !_showFavourite;
+    notifyListeners();
   }
 }

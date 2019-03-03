@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/product.dart';
+import 'package:flutter_app/scoped_model/main_scopped_model.dart';
 import 'package:flutter_app/scoped_model/products_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './product_edit.dart';
@@ -23,12 +23,12 @@ class MyProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainScoppedModel>(
+      builder: (BuildContext context, Widget child, MainScoppedModel model) {
         return ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             return Dismissible(
-              key: Key(model.products[index].title),
+              key: Key(model.allProducts[index].title),
               background: Container(color: Colors.red),
               onDismissed: (DismissDirection direction) {
                 if (direction == DismissDirection.endToStart) {
@@ -37,7 +37,7 @@ class MyProductsPage extends StatelessWidget {
                   // Then show a snackbar!
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content:
-                          Text(model.products[index].title + " dismissed")));
+                          Text(model.allProducts[index].title + " dismissed")));
                 } else if (direction == DismissDirection.startToEnd) {
                   Scaffold
                       .of(context)
@@ -49,10 +49,10 @@ class MyProductsPage extends StatelessWidget {
                   ListTile(
                     leading: CircleAvatar(
                         backgroundImage:
-                            AssetImage(model.products[index].image)),
-                    title: Text(model.products[index].title),
+                            AssetImage(model.allProducts[index].image)),
+                    title: Text(model.allProducts[index].title),
                     subtitle:
-                        Text("\Rs ${model.products[index].price.toString()}"),
+                        Text("\Rs ${model.allProducts[index].price.toString()}"),
                     trailing: _buildEditButton(context, index, model),
                   ),
                   Divider()
@@ -60,7 +60,7 @@ class MyProductsPage extends StatelessWidget {
               ),
             );
           },
-          itemCount: model.products.length,
+          itemCount: model.allProducts.length,
         );
       },
     );

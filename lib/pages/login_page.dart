@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/scoped_model/main_scopped_model.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,10 +10,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  final Map<String,dynamic> _formData = {
-    "email" : null,
-    "password" : null,
-    "acceptTerms" : false
+  final Map<String, dynamic> _formData = {
+    "email": null,
+    "password": null,
+    "acceptTerms": false
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -70,11 +72,12 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  void _onSubmit() {
+  void _onSubmit(Function login) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
+    login(_formData["email"], _formData["password"]);
     Navigator.pushReplacementNamed(context, "/home");
   }
 
@@ -106,11 +109,16 @@ class _LoginPage extends State<LoginPage> {
                       height: 10.0,
                     ),
                     _buildSwitch(),
-                    RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        textColor: Colors.white,
-                        child: Text("LOGIN"),
-                        onPressed: _onSubmit)
+                    ScopedModelDescendant<MainScoppedModel>(
+                      builder: (BuildContext context, Widget child,
+                          MainScoppedModel model) {
+                        return RaisedButton(
+                            color: Theme.of(context).primaryColor,
+                            textColor: Colors.white,
+                            child: Text("LOGIN"),
+                            onPressed: () => _onSubmit(model.login));
+                      },
+                    )
                   ],
                 ),
               ),
