@@ -93,8 +93,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
       return RaisedButton(
         child: Text("Save"),
         color: Theme.of(context).accentColor,
-        onPressed: () => _submitForm(
-            model.addProduct, model.updateProduct, model.selectedProductId),
+        onPressed: () => _submitForm(model.addProduct, model.updateProduct,
+            model.selectedProduct, model.selectedProductId),
       );
     });
   }
@@ -129,28 +129,22 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   // For Save button pressed
-  void _submitForm(Function addProduct, Function updateProduct,
+  void _submitForm(
+      Function addProduct, Function updateProduct, Function setSelectedProduct,
       [int selectedIndex]) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
     if (selectedIndex == null) {
-      addProduct(
-          _formValues["title"],
-          _formValues["description"],
-          _formValues["price"],
-          _formValues["image"],
-          _formValues["address"]);
+      addProduct(_formValues["title"], _formValues["description"],
+          _formValues["price"], _formValues["image"], _formValues["address"]);
     } else {
-      updateProduct(
-          _formValues["title"],
-          _formValues["description"],
-          _formValues["price"],
-          _formValues["image"],
-          _formValues["address"]);
+      updateProduct(_formValues["title"], _formValues["description"],
+          _formValues["price"], _formValues["image"], _formValues["address"]);
     }
-    Navigator.pushReplacementNamed(context, "/home");
+    Navigator.pushReplacementNamed(context, "/home")
+        .then((_) => setSelectedProduct(null));
   }
 
   @override

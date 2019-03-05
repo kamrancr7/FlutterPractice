@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/scoped_model/connected_products.dart';
 import 'package:flutter_app/scoped_model/main_scopped_model.dart';
-import 'package:flutter_app/scoped_model/products_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './product_edit.dart';
 
@@ -17,7 +17,9 @@ class MyProductsPage extends StatelessWidget {
                 return ProductEditPage();
               },
             ),
-          );
+          ).then((_){
+            model.selectedProduct(null);
+          });
         });
   }
 
@@ -66,3 +68,4 @@ class MyProductsPage extends StatelessWidget {
     );
   }
 }
+
