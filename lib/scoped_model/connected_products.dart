@@ -20,17 +20,21 @@ mixin ConnectedProductsModel on Model {
       "email" : _authenticatedUser.email
     };
     String url = "https://flutter-products-536cd.firebaseio.com/products.json";
-    http.post(url,body: json.encode(productData));
-    final Product newProduct = Product(
-        title: title,
-        description: description,
-        price: price,
-        image: image,
-        address: address,
-        id: _authenticatedUser.id,
-        email: _authenticatedUser.email);
-    _products.add(newProduct);
-    notifyListeners();
+    http.post(url,body: json.encode(productData)).then((http.Response response){
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product newProduct = Product(
+        id: responseData["name"],
+          title: title,
+          description: description,
+          price: price,
+          image: image,
+          address: address,
+          userId: _authenticatedUser.id,
+          email: _authenticatedUser.email);
+      _products.add(newProduct);
+      notifyListeners();
+    });
+
   }
 }
 
