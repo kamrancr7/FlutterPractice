@@ -1,6 +1,8 @@
 import 'package:flutter_app/models/product.dart';
 import 'package:flutter_app/models/user_model.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
@@ -9,6 +11,16 @@ mixin ConnectedProductsModel on Model {
 
   void addProduct(String title, String description, double price, String image,
       String address) {
+    final Map<String, dynamic> productData = {
+      "title" : title,
+      "description" : description,
+      "price" : price,
+      "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVjjVX09GA35_3Bg2D1tMWjH6ri8sb7iiiPCsW6ihH0beRQD4DDg",
+      "address" : address,
+      "email" : _authenticatedUser.email
+    };
+    String url = "https://flutter-products-536cd.firebaseio.com/products.json";
+    http.post(url,body: json.encode(productData));
     final Product newProduct = Product(
         title: title,
         description: description,
