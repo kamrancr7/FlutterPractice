@@ -8,19 +8,22 @@ mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   UserModel _authenticatedUser;
   int selIndex;
+  String _url = "https://flutter-products-536cd.firebaseio.com/products.json";
+  bool _isLoading = false;
 
   void addProduct(String title, String description, double price, String image,
       String address) {
+    _isLoading = true;
     final Map<String, dynamic> productData = {
       "title" : title,
       "description" : description,
       "price" : price,
       "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVjjVX09GA35_3Bg2D1tMWjH6ri8sb7iiiPCsW6ihH0beRQD4DDg",
       "address" : address,
-      "email" : _authenticatedUser.email
+      "email" : _authenticatedUser.email,
+      "userId" : _authenticatedUser.id
     };
-    String url = "https://flutter-products-536cd.firebaseio.com/products.json";
-    http.post(url,body: json.encode(productData)).then((http.Response response){
+    http.post(_url,body: json.encode(productData)).then((http.Response response){
       final Map<String, dynamic> responseData = json.decode(response.body);
       final Product newProduct = Product(
         id: responseData["name"],
@@ -32,6 +35,7 @@ mixin ConnectedProductsModel on Model {
           userId: _authenticatedUser.id,
           email: _authenticatedUser.email);
       _products.add(newProduct);
+      _isLoading = false;
       notifyListeners();
     });
 
@@ -86,6 +90,28 @@ mixin ProductsModel on ConnectedProductsModel {
     selIndex = null;
   }
 
+  void fetchProducts(){
+    _isLoading = true;
+    http.get(_url).then((http.Response response){
+      final List<Product> fetchProductList = [];
+      final Map<String, dynamic> productList = json.decode(response.body);
+      productList.forEach((String productId, dynamic productData){
+        Product product = Product(id: productId,
+            title: productData['title'],
+            description: productData['description'],
+            price: productData['price'],
+            image: productData['image'],
+            address: productData['address'],
+            userId:  productData['userId'].toString(),
+            email: productData['email']);
+        fetchProductList.add(product);
+      });
+      _products = fetchProductList;
+      _isLoading = false;
+      notifyListeners();
+    });
+  }
+
   void toggleProductFavouriteStatus() {
     final bool isCurrentlyFavourite = selectProduct.isFavourite;
     final bool newFavouriteStatus = !isCurrentlyFavourite;
@@ -120,5 +146,11 @@ mixin UserScoppedModel on ConnectedProductsModel {
 
   void login(String email, String password) {
     _authenticatedUser = UserModel(id: "1", email: email, password: password);
+  }
+}
+
+mixin UtilityModel on ConnectedProductsModel{
+  bool get isLoading{
+    return _isLoading;
   }
 }

@@ -3,7 +3,24 @@ import 'package:flutter_app/scoped_model/main_scopped_model.dart';
 import '../widgets/products/products.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  final MainScoppedModel model;
+
+  HomePage(this.model);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _HomePage();
+  }
+}
+
+class _HomePage extends State<HomePage> {
+  @override
+  void initState() {
+    widget.model.fetchProducts();
+    super.initState();
+  }
+
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: Column(
@@ -24,6 +41,22 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Widget _buildProductList() {
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainScoppedModel model) {
+        Widget content = Center(
+          child: Text("No Product Found"),
+        );
+        if (model.displayedProducts.length > 0 && !model.isLoading) {
+          content = Products();
+        } else if (model.isLoading) {
+          content = Center(child: CircularProgressIndicator(),);
+        }
+        return content;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +65,8 @@ class HomePage extends StatelessWidget {
         title: Text("EasyList"),
         actions: <Widget>[
           ScopedModelDescendant<MainScoppedModel>(
-            builder: (BuildContext context, Widget child, MainScoppedModel model) {
+            builder:
+                (BuildContext context, Widget child, MainScoppedModel model) {
               return IconButton(
                 icon: Icon(model.showFavourite
                     ? Icons.favorite
@@ -45,7 +79,7 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: Products(),
+      body: _buildProductList(),
     );
   }
 }

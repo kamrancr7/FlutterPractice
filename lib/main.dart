@@ -18,17 +18,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyApp extends State<MyApp> {
+  final MainScoppedModel model = MainScoppedModel();
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MainScoppedModel>(
-        model: MainScoppedModel(),
+        model: model,
         child: MaterialApp(
           theme: ThemeData(
               primarySwatch: Colors.deepOrange, accentColor: Colors.purple),
           // home: LoginPage(),
           routes: {
             "/": (BuildContext) => LoginPage(),
-            "/home": (BuildContext) => HomePage(),
+            "/home": (BuildContext) => HomePage(model),
             "/admin": (BuildContext) => ProductAdmin()
           },
           onGenerateRoute: (RouteSettings settings) {
@@ -45,7 +46,7 @@ class _MyApp extends State<MyApp> {
             return null;
           },
           onUnknownRoute: (RouteSettings settings) {
-            return MaterialPageRoute(builder: (BuildContext) => HomePage());
+            return MaterialPageRoute(builder: (BuildContext) => HomePage(model));
           },
         ));
   }
