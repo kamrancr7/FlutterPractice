@@ -70,7 +70,7 @@ class _MyProductPage extends State<MyProductsPage>{
                   ListTile(
                     leading: CircleAvatar(
                         backgroundImage:
-                            AssetImage(model.allProducts[index].image)),
+                            NetworkImage(model.allProducts[index].image)),
                     title: Text(model.allProducts[index].title),
                     subtitle:
                         Text("\Rs ${model.allProducts[index].price.toString()}"),

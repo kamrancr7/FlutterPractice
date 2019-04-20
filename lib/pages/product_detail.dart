@@ -7,12 +7,11 @@ import 'package:flutter_app/ui_elements/TextDefault.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ProductDetail extends StatelessWidget {
-
   final int productIndex;
 
   ProductDetail(this.productIndex);
 
-  Widget _buildAddressPriceRow(String productAddress,String productPrice) {
+  Widget _buildAddressPriceRow(String productAddress, String productPrice) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -40,32 +39,35 @@ class ProductDetail extends StatelessWidget {
       return Future.value(false);
     }, child: ScopedModelDescendant<MainScoppedModel>(
         builder: (BuildContext context, Widget child, MainScoppedModel model) {
-          final Product product = model.allProducts[productIndex];
+      final Product product = model.allProducts[productIndex];
       return Scaffold(
         appBar: AppBar(
           title: Text(product.title),
         ),
-        body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(product.image),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: TextDefault(product.title),
-              ),
-              _buildAddressPriceRow(product.address,product.price.toString()),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  product.description,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontFamily: "Oswald",
-                    color: Colors.grey,
-                  ),
+        body:  Padding(
+          padding: EdgeInsets.all(10),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.network(product.image),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: TextDefault(product.title),
                 ),
-              )
-            ]),
+                _buildAddressPriceRow(product.address, product.price.toString()),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    product.description,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: "Oswald",
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              ]),
+        ),
       );
     }));
   }

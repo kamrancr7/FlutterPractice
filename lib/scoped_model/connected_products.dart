@@ -83,37 +83,54 @@ mixin ProductsModel on ConnectedProductsModel {
       "price": price,
       "image":
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVjjVX09GA35_3Bg2D1tMWjH6ri8sb7iiiPCsW6ihH0beRQD4DDg",
+      "address": address,
       "userId": selectProduct.userId,
       "email": selectProduct.email
     };
-    http.put(
-        "https://flutter-products-536cd.firebaseio.com/products/${selectProduct.id}.json",
-        body: json.encode(updateData)).then((http.Response response){
-          _isLoading = false;
-          final Product updateProduct = Product(
-              id: selectProduct.id,
-              title: title,
-              description: description,
-              price: price,
-              image: image,
-              address: address,
-              userId: selectProduct.userId,
-              email: selectProduct.email);
-          _products[selIndex] = updateProduct;
-          notifyListeners();
+    http
+        .put(
+            "https://flutter-products-536cd.firebaseio.com/products/${selectProduct.id}.json",
+            body: json.encode(updateData))
+        .then((http.Response response) {
+      _isLoading = false;
+      final Product updateProduct = Product(
+          id: selectProduct.id,
+          title: title,
+          description: description,
+          price: price,
+          image: image,
+          address: address,
+          userId: selectProduct.userId,
+          email: selectProduct.email);
+      _products[selIndex] = updateProduct;
+      notifyListeners();
     });
   }
 
   void deleteProduct() {
+    _isLoading = true;
+    final deletedProductId = selectProduct.id;
     _products.removeAt(selIndex);
     selIndex = null;
+    notifyListeners();
+    http.delete(
+            "https://flutter-products-536cd.firebaseio.com/products/${deletedProductId}.json")
+        .then((http.Response response) {
+          _isLoading = false;
+          notifyListeners();
+    });
   }
 
-  void fetchProducts() {
+  Future<Null> fetchProducts() {
     _isLoading = true;
-    http.get(_url).then((http.Response response) {
+    return http.get(_url).then((http.Response response) {
       final List<Product> fetchProductList = [];
       final Map<String, dynamic> productList = json.decode(response.body);
+      if(productList == null){
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
       productList.forEach((String productId, dynamic productData) {
         Product product = Product(
             id: productId,
