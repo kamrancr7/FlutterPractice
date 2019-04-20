@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/scoped_model/main_scopped_model.dart';
 import './product_edit.dart';
 import './my_products.dart';
 
 class ProductAdmin extends StatelessWidget {
+
+  final MainScoppedModel model;
+
+  ProductAdmin(this.model);
 
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
@@ -44,7 +49,7 @@ class ProductAdmin extends StatelessWidget {
         ),
         body: TabBarView(children: <Widget>[
           ProductEditPage(),
-          MyProductsPage()
+          MyProductsPage(model)
         ]),
       ),
     );

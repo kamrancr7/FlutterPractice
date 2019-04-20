@@ -15,18 +15,21 @@ mixin ConnectedProductsModel on Model {
       String address) {
     _isLoading = true;
     final Map<String, dynamic> productData = {
-      "title" : title,
-      "description" : description,
-      "price" : price,
-      "image" : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVjjVX09GA35_3Bg2D1tMWjH6ri8sb7iiiPCsW6ihH0beRQD4DDg",
-      "address" : address,
-      "email" : _authenticatedUser.email,
-      "userId" : _authenticatedUser.id
+      "title": title,
+      "description": description,
+      "price": price,
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVjjVX09GA35_3Bg2D1tMWjH6ri8sb7iiiPCsW6ihH0beRQD4DDg",
+      "address": address,
+      "email": _authenticatedUser.email,
+      "userId": _authenticatedUser.id
     };
-    http.post(_url,body: json.encode(productData)).then((http.Response response){
+    http
+        .post(_url, body: json.encode(productData))
+        .then((http.Response response) {
       final Map<String, dynamic> responseData = json.decode(response.body);
       final Product newProduct = Product(
-        id: responseData["name"],
+          id: responseData["name"],
           title: title,
           description: description,
           price: price,
@@ -38,7 +41,6 @@ mixin ConnectedProductsModel on Model {
       _isLoading = false;
       notifyListeners();
     });
-
   }
 }
 
@@ -60,7 +62,7 @@ mixin ProductsModel on ConnectedProductsModel {
     return selIndex;
   }
 
-  bool get showFavourite{
+  bool get showFavourite {
     return _showFavourite;
   }
 
@@ -71,18 +73,35 @@ mixin ProductsModel on ConnectedProductsModel {
     return _products[selIndex];
   }
 
-  void updateProduct(String title, String description, double price, String image,
-      String address) {
-    final Product updateProduct = Product(
-        title: title,
-        description: description,
-        price: price,
-        image: image,
-        address: address,
-        id: selectProduct.id,
-        email: selectProduct.email);
-    _products[selIndex] = updateProduct;
+  void updateProduct(String title, String description, double price,
+      String image, String address) {
+    _isLoading = true;
     notifyListeners();
+    final Map<String, dynamic> updateData = {
+      "title": title,
+      "description": description,
+      "price": price,
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVjjVX09GA35_3Bg2D1tMWjH6ri8sb7iiiPCsW6ihH0beRQD4DDg",
+      "userId": selectProduct.userId,
+      "email": selectProduct.email
+    };
+    http.put(
+        "https://flutter-products-536cd.firebaseio.com/products/${selectProduct.id}.json",
+        body: json.encode(updateData)).then((http.Response response){
+          _isLoading = false;
+          final Product updateProduct = Product(
+              id: selectProduct.id,
+              title: title,
+              description: description,
+              price: price,
+              image: image,
+              address: address,
+              userId: selectProduct.userId,
+              email: selectProduct.email);
+          _products[selIndex] = updateProduct;
+          notifyListeners();
+    });
   }
 
   void deleteProduct() {
@@ -90,19 +109,20 @@ mixin ProductsModel on ConnectedProductsModel {
     selIndex = null;
   }
 
-  void fetchProducts(){
+  void fetchProducts() {
     _isLoading = true;
-    http.get(_url).then((http.Response response){
+    http.get(_url).then((http.Response response) {
       final List<Product> fetchProductList = [];
       final Map<String, dynamic> productList = json.decode(response.body);
-      productList.forEach((String productId, dynamic productData){
-        Product product = Product(id: productId,
+      productList.forEach((String productId, dynamic productData) {
+        Product product = Product(
+            id: productId,
             title: productData['title'],
             description: productData['description'],
             price: productData['price'],
             image: productData['image'],
             address: productData['address'],
-            userId:  productData['userId'].toString(),
+            userId: productData['userId'].toString(),
             email: productData['email']);
         fetchProductList.add(product);
       });
@@ -131,7 +151,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void selectedProduct(int index) {
     selIndex = index;
-    if(index != null) {
+    if (index != null) {
       notifyListeners();
     }
   }
@@ -143,14 +163,13 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserScoppedModel on ConnectedProductsModel {
-
   void login(String email, String password) {
     _authenticatedUser = UserModel(id: "1", email: email, password: password);
   }
 }
 
-mixin UtilityModel on ConnectedProductsModel{
-  bool get isLoading{
+mixin UtilityModel on ConnectedProductsModel {
+  bool get isLoading {
     return _isLoading;
   }
 }

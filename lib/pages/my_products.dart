@@ -4,7 +4,26 @@ import 'package:flutter_app/scoped_model/main_scopped_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './product_edit.dart';
 
-class MyProductsPage extends StatelessWidget {
+class MyProductsPage extends StatefulWidget {
+
+  final MainScoppedModel model;
+
+  MyProductsPage(this.model);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _MyProductPage();
+  }
+}
+
+class _MyProductPage extends State<MyProductsPage>{
+
+  @override
+  void initState() {
+    widget.model.fetchProducts();
+    super.initState();
+  }
+
   Widget _buildEditButton(
       BuildContext context, int index, ProductsModel model) {
     return IconButton(

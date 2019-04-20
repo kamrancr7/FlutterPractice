@@ -30,7 +30,7 @@ class _MyApp extends State<MyApp> {
           routes: {
             "/": (BuildContext) => LoginPage(),
             "/home": (BuildContext) => HomePage(model),
-            "/admin": (BuildContext) => ProductAdmin()
+            "/admin": (BuildContext) => ProductAdmin(model)
           },
           onGenerateRoute: (RouteSettings settings) {
             final List<String> pathElements = settings.name.split("/");
